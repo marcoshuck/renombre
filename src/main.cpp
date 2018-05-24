@@ -1,4 +1,3 @@
-#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
@@ -11,11 +10,11 @@
 
 int main(int argc, char *argv[])
 {
-    QString *path;
-    QDir *folder;
+    QString path;
+    QDir folder;
     QFile *file;
-    QFileInfo *fileInfo;
-    QStringList *filenames;
+    QFileInfo fileInfo;
+    QStringList filenames;
 
     if(argc < 2)
     {
@@ -23,63 +22,58 @@ int main(int argc, char *argv[])
         return Errors::NO_PARAM;
     }
 
-    path = new QString(argv[1]);
-    folder = new QDir(*path);
+    path = QString(argv[1]);
+    folder = QDir(path);
 
-    if(!folder->exists())
+    if(!folder.exists())
     {
         MessageHelper::Error("This folder does not exist.");
         return Errors::NO_EXISTS;
     }
 
-    if(!folder->isReadable())
+    if(!folder.isReadable())
     {
         MessageHelper::Error("This folder is not readable.");
         return Errors::NOT_READABLE;
     }
 
-    if(folder->isRelative())
+    if(folder.isRelative())
     {
-        folder->makeAbsolute();
+        folder.makeAbsolute();
     }
 
-    MessageHelper::Info("Initializing renaming process on folder " + folder->absolutePath().toStdString());
+    MessageHelper::Info("Initializing renaming process on folder " + folder.absolutePath().toStdString());
 
-    filenames = new QStringList(folder->entryList(QStringList() << "*.*", QDir::Files, QDir::Name));
+    filenames = QStringList(folder.entryList(QStringList() << "*.*", QDir::Files, QDir::Name));
 
-    if(filenames->empty())
+    if(filenames.empty())
     {
         MessageHelper::Error("This folder is empty.");
         return Errors::EMPTY;
     }
 
 
-    foreach(QString filename, *filenames)
+    foreach(QString filename, filenames)
     {
-        file = new QFile(folder->absolutePath() + "/" + filename);
-        fileInfo = new QFileInfo(file->fileName());
+        file = new QFile(folder.absolutePath() + "/" + filename);
+        fileInfo = QFileInfo(file->fileName());
 
-        if((folder->absolutePath() + "/" + filename) == file->fileName())
+        if((folder.absolutePath() + "/" + filename) == file->fileName())
         {
-            MessageHelper::Warning("File named " + fileInfo->fileName().toStdString() + " already has lowercase name format.");
+            MessageHelper::Warning("File named " + fileInfo.fileName().toStdString() + " already has lowercase name format.");
+            delete file;
             continue;
         }
 
-        if(!file->rename(folder->absolutePath() + "/" + filename.toLower()))
+        if(!file->rename(folder.absolutePath() + "/" + filename.toLower()))
         {
-            MessageHelper::Warning("File named " + fileInfo->fileName().toStdString()  + " could not be renamed.");
+            MessageHelper::Warning("File named " + fileInfo.fileName().toStdString()  + " could not be renamed.");
+            delete file;
             continue;
         }
-
-        MessageHelper::Success(fileInfo->fileName().toStdString()  + " was sucessfully renamed to " + filename.toLower().toStdString());
-
+        MessageHelper::Success(fileInfo.fileName().toStdString()  + " was sucessfully renamed to " + filename.toLower().toStdString());
         delete file;
-        delete fileInfo;
     }
-
-    delete path;
-    delete folder;
-    delete filenames;
 
     return 0;
 }
