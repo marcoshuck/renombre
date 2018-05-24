@@ -11,10 +11,11 @@ int main(int argc, char *argv[])
     QString *path;
     QDir *folder;
     QFile *file;
+    QFileInfo *fileInfo;
     QStringList *filenames;
     if(argc < 2)
     {
-        MessageHelper::Error("Missing argument");
+        MessageHelper::Error("Missing argument. Format: ./renombre [PATH]");
         return Errors::NO_PARAM;
     }
 
@@ -44,17 +45,36 @@ int main(int argc, char *argv[])
         folder->makeAbsolute();
     }
 
+    MessageHelper::Info("Initializing renaming process on folder " + folder->absolutePath().toStdString());
+
     filenames = new QStringList(folder->entryList(QStringList() << "*.*", QDir::Files, QDir::Name));
 
     foreach(QString filename, *filenames)
     {
         file = new QFile(folder->absolutePath() + "/" + filename);
-        if(!file->rename(folder->absolutePath() + "/" + filename.toLower()))
+        fileInfo = new QFileInfo(file->fileName());
+
+        if((folder->absolutePath() + "/" + filename) == file->fileName())
         {
-            MessageHelper::Warning("File named " + file->fileName().toStdString() + " could not be renamed.");
+            MessageHelper::Warning("File named " + fileInfo->fileName().toStdString() + " already has lowercase name format.");
             continue;
         }
-        MessageHelper::Success(filename.toStdString() + " was sucessfully renamed to " + filename.toLower().toStdString());
+
+        if(!file->rename(folder->absolutePath() + "/" + filename.toLower()))
+        {
+            MessageHelper::Warning("File named " + fileInfo->fileName().toStdString()  + " could not be renamed.");
+            continue;
+        }
+
+        MessageHelper::Success(fileInfo->fileName().toStdString()  + " was sucessfully renamed to " + filename.toLower().toStdString());
+
+        delete file;
+        delete fileInfo;
     }
+
+    delete path;
+    delete folder;
+    delete filenames;
+
     return 0;
 }
