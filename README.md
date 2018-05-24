@@ -1,16 +1,21 @@
 # Renombre
-Una aplicaci髇 para transformar los nombres de los archivos de un directorio.
+Una aplicaci贸n para transformar los nombres de los archivos de un directorio.
 
 ## Objetivo
-Si tengo un directorio en el que quiero modificar varios archivos con el formato de nombre UnArchivoDeEjemplo.alg.o, la aplicaci髇 te los deja con el formato unarchivodeejemplo.alg.o
+Si tengo un directorio en el que quiero modificar varios archivos con el formato de nombre UnArchivoDeEjemplo.alg.o, la aplicaci贸n te los deja con el formato unarchivodeejemplo.alg.o
 
 ## Uso
 ```
-./renombre.exe [PATH]
+./renombre [PATH]
 ```
-PATH: Puede ser absoluto o relativo, t閏nicamente funciona en ambos.
+**PATH:** Puede ser absoluto o relativo, t茅cnicamente funciona en ambos.
 
-## Tecnolog韆s
+## Compilaci贸n
+Este proyecto fue compilado con MinGW para 32 bits. Para ver como realizar la compilaci贸n, dirigirse a la documentaci贸n de Qt.
+
+**IMPORTANTE:** Una vez compilado, utilizar las librer铆as en la carpeta /lib y ponerlas en la misma ubicaci贸n que el ejecutable generado para que funcione.
+
+## Tecnolog铆as
 - Qt 5.5
 - C++11
 
