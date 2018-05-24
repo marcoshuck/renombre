@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
     foreach(QString filename, *filenames)
     {
         file = new QFile(folder->absolutePath() + "/" + filename);
-        MessageHelper::Debug(folder->absolutePath().toStdString() + filename.toStdString());
         if(!file->rename(folder->absolutePath() + "/" + filename.toLower()))
         {
             MessageHelper::Warning("File named " + file->fileName().toStdString() + " could not be renamed.");
