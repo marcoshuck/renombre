@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         file = new QFile(folder.absolutePath() + "/" + filename);
         fileInfo = QFileInfo(file->fileName());
 
-        if((folder.absolutePath() + "/" + filename) == file->fileName())
+        if((folder.absolutePath() + "/" + filename) == file->fileName().toLower())
         {
             MessageHelper::Warning("File named " + fileInfo.fileName().toStdString() + " already has lowercase name format.");
             delete file;
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
             delete file;
             continue;
         }
+
         MessageHelper::Success(fileInfo.fileName().toStdString()  + " was sucessfully renamed to " + filename.toLower().toStdString());
         delete file;
     }
