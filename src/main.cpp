@@ -1,6 +1,9 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QDir>
+#include <QFileInfo>
+#include <QString>
+#include <QStringList>
 #include <QtGlobal>
 
 #include "error.h"
@@ -13,6 +16,7 @@ int main(int argc, char *argv[])
     QFile *file;
     QFileInfo *fileInfo;
     QStringList *filenames;
+
     if(argc < 2)
     {
         MessageHelper::Error("Missing argument. Format: ./renombre [PATH]");
@@ -26,12 +30,6 @@ int main(int argc, char *argv[])
     {
         MessageHelper::Error("This folder does not exist.");
         return Errors::NO_EXISTS;
-    }
-
-    if(folder->isEmpty())
-    {
-        MessageHelper::Error("This folder is empty.");
-        return Errors::EMPTY;
     }
 
     if(!folder->isReadable())
@@ -48,6 +46,13 @@ int main(int argc, char *argv[])
     MessageHelper::Info("Initializing renaming process on folder " + folder->absolutePath().toStdString());
 
     filenames = new QStringList(folder->entryList(QStringList() << "*.*", QDir::Files, QDir::Name));
+
+    if(filenames->empty())
+    {
+        MessageHelper::Error("This folder is empty.");
+        return Errors::EMPTY;
+    }
+
 
     foreach(QString filename, *filenames)
     {
