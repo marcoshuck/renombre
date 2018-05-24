@@ -1,8 +1,6 @@
 # Renombre
 [![Build Status](https://travis-ci.org/marcoshuck/renombre.svg?branch=master)](https://travis-ci.org/marcoshuck/renombre) ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![C++](https://img.shields.io/badge/c++-11-orange.svg) ![Qt](https://img.shields.io/badge/qt-5.10.1-green.svg) 
 
-Una aplicación para transformar los nombres de los archivos de un directorio.
-
 ## Objetivo
 Si tengo un directorio en el que quiero modificar varios archivos con el formato de nombre UnArchivoDeEjemplo.alg.o, la aplicación te los deja con el formato unarchivodeejemplo.alg.o
 
