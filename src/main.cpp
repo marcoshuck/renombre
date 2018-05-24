@@ -1,64 +1,61 @@
 #include <QCoreApplication>
-#include <iostream>
 #include <QFile>
 #include <QDir>
-#include <QDebug>
-#include <QTextStream>
-#include <QString>
-#include <QStringList>
 #include <QtGlobal>
 
-#include "errores.h"
-
-#define DEBUG false
+#include "error.h"
+#include "messagehelper.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
-    QString *rutaDirectorio;
-    QDir *directorio;
-    QFile *archivo;
-    QStringList *listaArchivos;
-
+    QString *path;
+    QDir *folder;
+    QFile *file;
+    QStringList *filenames;
     if(argc < 2)
     {
-        return ERR_NO_PARAM;
+        MessageHelper::Error("Missing argument");
+        return Errors::NO_PARAM;
     }
 
-    rutaDirectorio = new QString(argv[1]);
-    directorio = new QDir(*rutaDirectorio);
+    path = new QString(argv[1]);
+    folder = new QDir(*path);
 
-    if(!directorio->exists())
+    if(!folder->exists())
     {
-        return ERR_NO_EXISTS;
+        MessageHelper::Error("This folder does not exist.");
+        return Errors::NO_EXISTS;
     }
 
-    if(directorio->isEmpty())
+    if(folder->isEmpty())
     {
-        return ERR_EMPTY;
+        MessageHelper::Error("This folder is empty.");
+        return Errors::EMPTY;
     }
 
-    if(directorio->isReadable())
+    if(!folder->isReadable())
     {
-        return ERR_NO_WRITABLE;
+        MessageHelper::Error("This folder is not readable.");
+        return Errors::NOT_READABLE;
     }
 
-    if(directorio->isRelative())
+    if(folder->isRelative())
     {
-        directorio->makeAbsolute();
+        folder->makeAbsolute();
     }
 
-    listaArchivos = new QStringList(directorio->entryList(QStringList() << "*.*", QDir::Files, QDir::Name));
+    filenames = new QStringList(folder->entryList(QStringList() << "*.*", QDir::Files, QDir::Name));
 
-    foreach(QString nombreArchivo, *listaArchivos)
+    foreach(QString filename, *filenames)
     {
-        archivo = new QFile(directorio->absolutePath() + nombreArchivo);
-        if(!archivo->rename(nombreArchivo, nombreArchivo.toLower()))
+        file = new QFile(folder->absolutePath() + "/" + filename);
+        MessageHelper::Debug(folder->absolutePath().toStdString() + filename.toStdString());
+        if(!file->rename(folder->absolutePath() + "/" + filename.toLower()))
         {
-            break;
+            MessageHelper::Warning("File named " + file->fileName().toStdString() + " could not be renamed.");
+            continue;
         }
-
+        MessageHelper::Success(filename.toStdString() + " was sucessfully renamed to " + filename.toLower().toStdString());
     }
-
-    return app.exec();
+    return 0;
 }
